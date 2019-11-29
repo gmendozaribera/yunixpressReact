@@ -24,7 +24,7 @@ export default function Header(props) {
     var name;
     props.routes.map(prop => {
       if (window.location.href.indexOf(prop.layout + prop.path) !== -1) {
-        name = props.rtlActive ? prop.rtlName : prop.name;
+        name = prop.name;
       }
       return null;
     });
@@ -52,9 +52,11 @@ export default function Header(props) {
                     {makeBrand()}
                   </Button>
                 </Grid>
+                {/* Aqui hay que agregar el componente que hace accion de agregar elementos */}
                 <Grid item xs={2}>
                   <Button color="success">Agregar</Button>
                 </Grid>
+                {/* Aqui tiene que terminar el componente de agregar */}
               </Grid>
             </CardBody>
           </Card>

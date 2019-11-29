@@ -12,6 +12,7 @@ import Grid from "@material-ui/core/Grid";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
+import { Link as Enlace } from "react-router-dom";
 
 function Copyright() {
   return (
@@ -104,25 +105,28 @@ export default function SignInSide() {
               control={<Checkbox value="remember" color="primary" />}
               label="Recordar Sesión"
             />
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              color="primary"
-              className={classes.submit}
-            >
-              Iniciar Sesion
-            </Button>
-
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              color="blue"
-              className={classes.submit2}
-            >
-              Registrate
-            </Button>
+            <Enlace to={"/admin"}>
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                color="primary"
+                className={classes.submit}
+              >
+                Iniciar Sesion
+              </Button>
+            </Enlace>
+            <Enlace to={"/signup"}>
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                color="blue"
+                className={classes.submit2}
+              >
+                Registrate
+              </Button>
+            </Enlace>
 
             <Grid container>
               <Grid item xs>

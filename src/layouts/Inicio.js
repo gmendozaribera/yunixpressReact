@@ -1,21 +1,25 @@
-import React from "react";
+import React, { Component } from "react";
 import { Switch, Route, Redirect } from "react-router-dom";
-import routes from "routesA.js";
+
+import "perfect-scrollbar/css/perfect-scrollbar.css";
+// @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
-import PerfectScrollbar from "perfect-scrollbar";
+// core components
+import Navbar from "components/Navbars/Navbar.js";
+import Footer from "components/Footer/Footer.js";
+import Sidebar from "components/Sidebar/Sidebar.js";
+
+import routes from "routes.js";
 
 import styles from "assets/jss/material-dashboard-react/layouts/adminStyle.js";
 
 import bgImage from "assets/img/sidebar-2.jpg";
 import logo from "assets/img/reactlogo.png";
-import Navbar from "components/Navbars/Navbar.js";
-import Sidebar from "components/SidebarTop/Sidebar.js";
-let ps;
 
 const switchRoutes = (
   <Switch>
     {routes.map((prop, key) => {
-      if (prop.layout === "/inicio") {
+      if (prop.layout === "/admin") {
         return (
           <Route
             path={prop.layout + prop.path}
@@ -26,78 +30,84 @@ const switchRoutes = (
       }
       return null;
     })}
-    <Redirect from="/inicio" to="/inicio/bienvenido" />
+    <Redirect from="/admin" to="/admin/dashboard" />
   </Switch>
 );
-const useStyles = makeStyles(styles);
 
-export default function Inicio({ ...rest }) {
-  const classes = useStyles();
+// const useStyles = makeStyles(styles);
+class Inicio extends Component {
+  classes = makeStyles(styles);
+
   // ref to help us initialize PerfectScrollbar on windows devices
-  const mainPanel = React.createRef();
+  mainPanel = () => React.createRef();
   // states and functions
-  const [image] = React.useState(bgImage);
-  //color de seleccionado
-  const [color] = React.useState("red");
-  const [mobileOpen, setMobileOpen] = React.useState(false);
-  const handleDrawerToggle = () => {
-    setMobileOpen(!mobileOpen);
+  image = () => React.useState(bgImage);
+  color = () => React.useState("blue");
+  mobileOpen = () => React.useState(false);
+  setMobileOpen = () => React.useState(false);
+  handleDrawerToggle = () => {
+    this.setMobileOpen(!this.mobileOpen);
   };
-  const getRoute = () => {
+  getRoute = () => {
     return window.location.pathname !== "/admin/maps";
   };
-  const resizeFunction = () => {
+  resizeFunction = () => {
     if (window.innerWidth >= 960) {
-      setMobileOpen(false);
+      this.setMobileOpen(false);
     }
   };
   // initialize and destroy the PerfectScrollbar plugin
-  React.useEffect(() => {
+  componentDidMount() {
     if (navigator.platform.indexOf("Win") > -1) {
-      // eslint-disable-next-line no-undef
-      ps = new PerfectScrollbar(mainPanel.current, {
-        suppressScrollX: true,
-        suppressScrollY: false
-      });
       document.body.style.overflow = "hidden";
     }
-    window.addEventListener("resize", resizeFunction);
+    window.addEventListener("resize", this.resizeFunction);
     // Specify how to clean up after this effect:
     return function cleanup() {
-      if (navigator.platform.indexOf("Win") > -1) {
-        ps.destroy();
-      }
-      window.removeEventListener("resize", resizeFunction);
+      window.removeEventListener("resize", this.resizeFunction);
     };
-  }, [mainPanel]);
-  return (
-    <div className={classes.wrapper}>
-      <Sidebar
-        routes={routes}
-        logoText={"YUNIEXPRESS"}
-        logo={logo}
-        image={image}
-        handleDrawerToggle={handleDrawerToggle}
-        open={mobileOpen}
-        color={color}
-        {...rest}
-      />
+  }
 
-      <div className={classes.mainPanel} ref={mainPanel}>
-        <Navbar
+  componentDidUpdate() {
+    if (navigator.platform.indexOf("Win") > -1) {
+      document.body.style.overflow = "hidden";
+    }
+    window.addEventListener("resize", this.resizeFunction);
+    // Specify how to clean up after this effect:
+    return function cleanup() {
+      window.removeEventListener("resize", this.resizeFunction);
+    };
+  }
+  render() {
+    return (
+      <div className={this.classes.wrapper}>
+        <Sidebar
           routes={routes}
-          handleDrawerToggle={handleDrawerToggle}
-          {...rest}
+          logoText={"YUNIEXPRESS"}
+          logo={logo}
+          image={this.image}
+          handleDrawerToggle={this.handleDrawerToggle}
+          open={this.mobileOpen}
+          color={this.color}
         />
-        {/* On the /maps route we want the map to be on full screen - this is not possible if the content and conatiner classes are present because they have some paddings which would make the map smaller */}
-        {getRoute() ? (
-          <div className={classes.content}>
-            <div className={classes.container}>{switchRoutes}</div>
-          </div>
-        ) : (
-          <div className={classes.map}>{switchRoutes}</div>
-        )}
+        <div className={this.classes.mainPanel} ref={this.mainPanel}>
+          <Navbar
+            routes={routes}
+            handleDrawerToggle={this.handleDrawerToggle}
+          />
+          {/* On the /maps route we want the map to be on full screen - this is not possible if the content and conatiner classes are present because they have some paddings which would make the map smaller */}
+          {this.getRoute() ? (
+            <div className={this.classes.content}>
+              <div className={this.classes.container}>{switchRoutes}</div>
+            </div>
+          ) : (
+            <div className={this.classes.map}>{switchRoutes}</div>
+          )}
+          {this.getRoute() ? <Footer /> : null}
+        </div>
       </div>
-    </div>
-  );
+    );
+  }
 }
+
+export default Inicio;
